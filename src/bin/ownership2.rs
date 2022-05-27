@@ -25,8 +25,8 @@ impl Point {
         self.y
     }
 
-    pub fn move_in_return_y(self) -> i32 {
-        self.y
+    pub fn move_in_return_y(self) -> String {
+        self.y.to_string()
     }
 }
 
@@ -53,11 +53,11 @@ fn main() {
     println!("y: {}", a.move_in_return_y());
     // println!("x: {}, y: {}", a.get_x(), a.get_y());
 
-    let b = Point{x:1, y:1};
+    let b = Point{x:1, y:100};
     print_point_by_ref(&b);
     print_point_by_ref(&&&b);
     print_point(b);
-    // print_point_by_ref(&b);
+    // print_point_by_ref(&b);  //编译失败
     // print_point(b);
     println!("end");
 }

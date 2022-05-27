@@ -48,6 +48,7 @@ impl<T> List<T> {
 impl<T> Drop for List<T> {
     fn drop(&mut self) {
         let mut node = self.head.take();
+        println!("Dropping list of {}", std::any::type_name::<T>());
         while let Some(mut n) = node {
             node = n.next.take();
         }
@@ -72,7 +73,7 @@ mod test {
         assert_eq!(Some("c".to_string()), list.pop());
         assert_eq!(Some("b".to_string()), list.pop());
         assert_eq!(Some("a".to_string()), list.pop());
-
+        drop(list);  //如果不写，函数结束才会回收内存
         let mut list = List::new();
 
         // for i in 0..1000_0000 {

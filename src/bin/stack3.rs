@@ -92,8 +92,15 @@ mod test {
         if let Some(&x) = list.peek() {
             assert_eq!(4_9999, x);
         }
-        
+
         assert_eq!(Some(4_9999), list.pop());
+
+        if let Some(x) = list.peek_mut() {
+            *x = -1;
+        }
+        assert_eq!(Some(-1), list.pop());
+
+        assert_eq!(Some(4_9997), list.pop());
         drop(list);
     }
 }

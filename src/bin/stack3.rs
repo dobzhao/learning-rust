@@ -1,5 +1,5 @@
+//增加peek方法
 
-//初步功能，数据量大会出问题
 
 type Link<T> = Option<Box<Node<T>>>;
 struct Node<T> {
@@ -25,33 +25,44 @@ impl<T> List<T> {
     }
 
     pub fn pop(&mut self) -> Option<T> {
-        // let node = self.head.take();
-        // match node {
-        //     Some(n) => {
-        //         self.head = n.next;
-        //         Some(n.elem)
-        //     }
-        //     None => None
-        // }
-
-        // if let Some(n) = node {
-        //     self.head = n.next;
-        //     Some(n.elem)
-        // } else {
-        //     None
-        // }
-
         self.head.take().map(|n| {
             self.head = n.next;
             n.elem
         })
+    }
+
+    pub fn peek(&self) -> Option<&T> {
+        self.head.as_ref().map(|n| &n.elem)   //用as_ref避免本身被消费，消费了不可能返回索引
+    }
+
+    // pub fn peek(&self) -> Option<&T> {  //另一种写法
+    //     if let Some(ref n) = self.head {  //这样写比较清楚
+    //         return Some(&n.elem);     //编译器自动解引用，实际是Some(&(*n).elem)
+    //     }
+    //     // if let Some(n) = &self.head { //这样写让人迷惑，但是编译器这样建议，确实能工作
+    //     //     return Some(&n.elem);
+    //     // }
+    //     None
+    // }
+
+}
+
+impl<T> Drop for List<T> {
+    fn drop(&mut self) {
+        let mut node = self.head.take();
+        println!("Dropping list of {}", std::any::type_name::<T>());
+        while let Some(mut n) = node {
+            node = n.next.take();
+        }
     }
 }
 
 fn main() {
     let mut list = List::new();
     (0..50_0000).for_each(|x| list.push(x));
+    println!("{}", list.peek().unwrap());
     println!("{}", list.pop().unwrap());
+    println!("{}", list.peek().unwrap());
 }
 
 #[cfg(test)]
@@ -66,19 +77,15 @@ mod test {
         assert_eq!(Some("c".to_string()), list.pop());
         assert_eq!(Some("b".to_string()), list.pop());
         assert_eq!(Some("a".to_string()), list.pop());
-
+        drop(list);  //如果不写，函数结束才会回收内存
         let mut list = List::new();
 
-        // for i in 0..5_0000 {
-        //     list.push(i);
-        // }
-
-        // DOTO: test里5万条会栈溢出, main里5万条不会，主线程默认8M，test给多少？
         (0..5_0000).for_each(|x| list.push(x));
+        if let Some(&x) = list.peek() {
+            assert_eq!(4_9999, x);
+        }
+        
         assert_eq!(Some(4_9999), list.pop());
-
-        // let mut list = std::collections::LinkedList::new();
-        // (0..1000_0000).for_each(|x| list.push_front(x));
-        // assert_eq!(Some(999_9999), list.pop_front());
+        drop(list);
     }
 }

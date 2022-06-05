@@ -1,3 +1,4 @@
+//修复堆栈溢出
 type Link<T> = Option<Box<Node<T>>>;
 struct Node<T> {
     elem: T,
@@ -22,22 +23,6 @@ impl<T> List<T> {
     }
 
     pub fn pop(&mut self) -> Option<T> {
-        // let node = self.head.take();
-        // match node {
-        //     Some(n) => {
-        //         self.head = n.next;
-        //         Some(n.elem)
-        //     }
-        //     None => None
-        // }
-
-        // if let Some(n) = node {
-        //     self.head = n.next;
-        //     Some(n.elem)
-        // } else {
-        //     None
-        // }
-
         self.head.take().map(|n| {
             self.head = n.next;
             n.elem
@@ -76,16 +61,8 @@ mod test {
         drop(list);  //如果不写，函数结束才会回收内存
         let mut list = List::new();
 
-        // for i in 0..1000_0000 {
-        //     list.push(i);
-        // }
-
         (0..5_0000).for_each(|x| list.push(x));
         assert_eq!(Some(4_9999), list.pop());
         drop(list);
-
-        // let mut list = std::collections::LinkedList::new();
-        // (0..1000_0000).for_each(|x| list.push_front(x));
-        // assert_eq!(Some(999_9999), list.pop_front());
     }
 }

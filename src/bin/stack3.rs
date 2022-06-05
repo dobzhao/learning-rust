@@ -45,6 +45,10 @@ impl<T> List<T> {
     //     None
     // }
 
+    pub fn peek_mut(&mut self) -> Option<&mut T> {
+        self.head.as_mut().map(|n| &mut n.elem)
+    }
+    
 }
 
 impl<T> Drop for List<T> {
@@ -62,7 +66,11 @@ fn main() {
     (0..50_0000).for_each(|x| list.push(x));
     println!("{}", list.peek().unwrap());
     println!("{}", list.pop().unwrap());
-    println!("{}", list.peek().unwrap());
+    if let Some(n) = list.peek_mut() {
+        *n = 5
+    }
+    println!("{}", list.pop().unwrap());
+    println!("{}", list.pop().unwrap());
 }
 
 #[cfg(test)]

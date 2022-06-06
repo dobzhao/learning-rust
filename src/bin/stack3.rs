@@ -7,7 +7,7 @@ struct Node<T> {
     next: Link<T>,
 }
 
-struct List<T> {
+pub struct List<T> {
     head: Link<T>,
 }
 
@@ -64,17 +64,10 @@ impl<T> Drop for List<T> {
 fn main() {
     let mut list = List::new();
     (0..50_0000).for_each(|x| list.push(x));
-    println!("{}", list.peek().unwrap());
-    println!("{}", list.pop().unwrap());
-    if let Some(n) = list.peek_mut() {
-        *n = 5
-    }
-    println!("{}", list.pop().unwrap());
-    println!("{}", list.pop().unwrap());
 }
 
 #[cfg(test)]
-mod test {
+mod unit_tests {
     use super::List;
     #[test]
     fn basics() {
@@ -87,20 +80,31 @@ mod test {
         assert_eq!(Some("a".to_string()), list.pop());
         drop(list);  //如果不写，函数结束才会回收内存
         let mut list = List::new();
-
         (0..5_0000).for_each(|x| list.push(x));
-        if let Some(&x) = list.peek() {
-            assert_eq!(4_9999, x);
-        }
-
         assert_eq!(Some(4_9999), list.pop());
+        drop(list);
+    }
 
+    #[test]
+    fn peek() {
+        let mut list = List::new();
+        (0..10).for_each(|x| list.push(x));
+        if let Some(&x) = list.peek() {
+            assert_eq!(9, x);
+        }
+        assert_eq!(Some(9), list.pop());
         if let Some(x) = list.peek_mut() {
             *x = -1;
         }
         assert_eq!(Some(-1), list.pop());
-
-        assert_eq!(Some(4_9997), list.pop());
         drop(list);
+
+        let mut list = List::new();
+        (0..10).for_each(|x| list.push(x.to_string()));
+        if let Some(x) = list.peek() {
+            assert_eq!(String::from("9"), *x);
+        } else {
+            panic!("empty list")
+        }
     }
 }

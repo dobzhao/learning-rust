@@ -7,7 +7,7 @@ struct Node<T> {
     next: Link<T>,
 }
 
-struct List<T> {
+pub struct List<T> {
     head: Link<T>,
 }
 
@@ -55,7 +55,7 @@ fn main() {
 }
 
 #[cfg(test)]
-mod test {
+mod unit_tests {
     use super::List;
     #[test]
     fn basics() {

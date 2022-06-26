@@ -5,7 +5,6 @@ Rc改成Arc目前的功能线程安全，如果要可写得用Mutex或RwLock
 use std::rc::Rc;
 // use std::sync::Arc;
 // use std::sync::Mutex;
-use std::cell::Cell;
 type Link<T> = Option<Rc<Node<T>>>;
 struct Node<T> {
     elem: T,

@@ -1,5 +1,5 @@
 
-//初步功能，数据量大会出问题
+//初步功能，数据量大会出问题，线程不安全
 
 type Link<T> = Option<Box<Node<T>>>;
 struct Node<T> {

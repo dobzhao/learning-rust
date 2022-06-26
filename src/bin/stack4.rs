@@ -1,4 +1,4 @@
-// 增加迭代器
+// 增加迭代器 线程不安全
 
 type Link<T> = Option<Box<Node<T>>>;
 struct Node<T> {
@@ -96,8 +96,8 @@ impl<T> Drop for List<T> {
     fn drop(&mut self) {
         let mut node = self.head.take();
         // println!("Dropping list of {}", std::any::type_name::<T>());
-        while let Some(mut n) = node {
-            node = n.next.take();
+        while let Some(n) = node {
+            node = n.next;
         }
     }
 }

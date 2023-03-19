@@ -1,2 +1,2 @@
 # learning-rust
-小例子
+学习中的小例子

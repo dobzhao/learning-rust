@@ -6,16 +6,12 @@
 				"bungcip.better-toml",
 				"rust-lang.rust-analyzer",
 				"serayuzgur.crates",
-				"LaurentTreguier.vscode-simple-icons",
-				"luqimin.tiny-light",
-				"serayuzgur.crates",
 				"eamodio.gitlens",
-				"cweijan.cweijan-personal-material-icon-theme",
 				"vadimcn.vscode-lldb"
 			],
 			"settings": {
 				"editor.formatOnSave": true,
-				"terminal.integrated.shell.linux": "/usr/bin/zsh",
+				"terminal.integrated.defaultProfile.linux": "zsh",
 				"files.exclude": {
 					"**/LICENSE": true
 				}

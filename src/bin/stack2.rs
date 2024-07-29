@@ -15,11 +15,10 @@ impl<T> List<T> {
     }
 
     pub fn push(&mut self, elem: T) {
-        let node = Node {
+        self.head = Some(Box::new(Node {
             elem: elem,
             next: self.head.take(),
-        };
-        self.head = Some(Box::new(node));
+        }));
     }
 
     pub fn pop(&mut self) -> Option<T> {
@@ -58,7 +57,7 @@ mod unit_tests {
         assert_eq!(Some("c".to_string()), list.pop());
         assert_eq!(Some("b".to_string()), list.pop());
         assert_eq!(Some("a".to_string()), list.pop());
-        drop(list);  //如果不写，函数结束才会回收内存
+        drop(list); //如果不写，函数结束才会回收内存
         let mut list = List::new();
 
         (0..5_0000).for_each(|x| list.push(x));

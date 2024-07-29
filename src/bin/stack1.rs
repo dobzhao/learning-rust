@@ -1,4 +1,3 @@
-
 //初步功能，数据量大会出问题，线程不安全
 
 type Link<T> = Option<Box<Node<T>>>;
@@ -17,11 +16,10 @@ impl<T> List<T> {
     }
 
     pub fn push(&mut self, elem: T) {
-        let node = Node {
+        self.head = Some(Box::new(Node {
             elem: elem,
             next: self.head.take(),
-        };
-        self.head = Some(Box::new(node));
+        }));
     }
 
     pub fn pop(&mut self) -> Option<T> {

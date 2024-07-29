@@ -1,6 +1,5 @@
 //增加peek, peet_mut方法，线程不安全
 
-
 type Link<T> = Option<Box<Node<T>>>;
 struct Node<T> {
     elem: T,
@@ -32,7 +31,12 @@ impl<T> List<T> {
     }
 
     pub fn peek(&self) -> Option<&T> {
-        self.head.as_ref().map(|n| &n.elem)   //用as_ref避免本身被消费，消费了不可能返回索引
+        /*
+        用as_ref避免本身被消费，返回的是引用,
+        &n.elem这里.比&优先级高，先计算n.elem的值，再取引用，
+        .的操作做了两次自动解引用，第一次是&解引用，第二次是Box解引用
+         */
+        self.head.as_ref().map(|n| &n.elem)
     }
 
     // pub fn peek(&self) -> Option<&T> {  //另一种写法
@@ -48,7 +52,6 @@ impl<T> List<T> {
     pub fn peek_mut(&mut self) -> Option<&mut T> {
         self.head.as_mut().map(|n| &mut n.elem)
     }
-    
 }
 
 impl<T> Drop for List<T> {
@@ -78,7 +81,7 @@ mod unit_tests {
         assert_eq!(Some("c".to_string()), list.pop());
         assert_eq!(Some("b".to_string()), list.pop());
         assert_eq!(Some("a".to_string()), list.pop());
-        drop(list);  //如果不写，函数结束才会回收内存
+        drop(list); //如果不写，函数结束才会回收内存
         let mut list = List::new();
         (0..5_0000).for_each(|x| list.push(x));
         assert_eq!(Some(4_9999), list.pop());

@@ -57,6 +57,7 @@ mod unit_tests {
         assert_eq!(Some("c".to_string()), list.pop());
         assert_eq!(Some("b".to_string()), list.pop());
         assert_eq!(Some("a".to_string()), list.pop());
+        assert_eq!(None, list.pop());
         drop(list); //如果不写，函数结束才会回收内存
         let mut list = List::new();
 

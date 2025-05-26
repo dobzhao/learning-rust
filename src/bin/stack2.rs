@@ -1,4 +1,3 @@
-//修复堆栈溢出   线程不安全
 type Link<T> = Option<Box<Node<T>>>;
 struct Node<T> {
     elem: T,
@@ -28,21 +27,23 @@ impl<T> List<T> {
         })
     }
 }
-
+// 手动实现 Drop trait，避免递归释放
 impl<T> Drop for List<T> {
     fn drop(&mut self) {
-        let mut node = self.head.take();
-        println!("Dropping list of {}", std::any::type_name::<T>());
-        while let Some(n) = node {
-            node = n.next;
+        while let Some(mut node) = self.head.take() {
+            self.head = node.next.take();
+            // node 被移出作用域后自动 drop
         }
     }
 }
-
 fn main() {
     let mut list = List::new();
-    (0..50_0000).for_each(|x| list.push(x));
+    (0..500000).for_each(|x| list.push(x));
     println!("{}", list.pop().unwrap());
+    for x in (0..499999).rev() {
+        assert_eq!(Some(x), list.pop());
+    }
+    assert_eq!(None, list.pop());
 }
 
 #[cfg(test)]
@@ -61,8 +62,8 @@ mod unit_tests {
         drop(list); //如果不写，函数结束才会回收内存
         let mut list = List::new();
 
-        (0..5_0000).for_each(|x| list.push(x));
-        assert_eq!(Some(4_9999), list.pop());
+        (0..500000).for_each(|x| list.push(x));
+        assert_eq!(Some(499999), list.pop());
         drop(list);
     }
 }
